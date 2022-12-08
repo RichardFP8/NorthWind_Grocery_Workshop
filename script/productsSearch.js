@@ -48,21 +48,7 @@ function displayAllProducts(categoryDropdown, table) {
     categoryDropdown.style.display = "";
     table.style.display = "block";
 
-    //we're going to make the first fetch call, this gets us the categories array, go through each object and 
-    //call another function to find the id property to make the second fetch call
-
-    for (let aCategory of categoriesArray) {
-        displayProductPerCategory(aCategory);
-    }
-}
-//this function is being passed each element of the category array from the first fetch call to make the second fetch call 
-function displayProductPerCategory(category) {
-
-    //each category has categoryId, use that to make the GET request and get products by category, display
-    //the returned data is another array but products only
-
-    console.log(`http://localhost:8081/api/categories/${category.categoryId}`);
-    fetch(`http://localhost:8081/api/categories/${category.categoryId}`).then(response => response.json()).then(products => {
+    fetch("http://localhost:8081/api/products").then(response => response.json()).then(products => {
         for (let aProduct of products) {
             let row = tableBody.insertRow(-1);
             //each object(element) of the array, loop through the properties and display only 3 by using the switch statement
@@ -71,7 +57,7 @@ function displayProductPerCategory(category) {
                     //create a link for the name to send the user to another page to display more details of that product
                     case "productName":
                         let anchor = document.createElement("a");
-                        anchor.href = "";
+                        anchor.href = `productdetails.html?productid=${aProduct["productId"]}`;
                         anchor.text = aProduct[info];
                         anchor.target = "_blank";
                         let anchorCell = row.insertCell(0);
@@ -86,4 +72,38 @@ function displayProductPerCategory(category) {
             }
         }
     });
+
+}
+//this function is being passed each element of the category array from the first fetch call to make the second fetch call 
+function displayProductPerCategory(category) {
+
+    //each category has categoryId, use that to make the GET request and get products by category, display
+    //the returned data is another array but products only
+
+    fetch(`http://localhost:8081/api/categories/${category.categoryId}`).then(response => response.json()).then(products => {
+        for (let aProduct of products) {
+            let row = tableBody.insertRow(-1);
+            //each object(element) of the array, loop through the properties and display only 3 by using the switch statement
+            for (let info in aProduct) {
+                switch (info) {
+                    //create a link for the name to send the user to another page to display more details of that product
+                    case "productName":
+                        let anchor = document.createElement("a");
+                        anchor.href = `productdetails.html?productid=${aProduct["productId"]}`;
+                        anchor.text = aProduct[info];
+                        anchor.target = "_blank";
+                        let anchorCell = row.insertCell(0);
+                        anchorCell.appendChild(anchor);
+                        break;
+                    case "unitPrice":
+                    case "unitsInStock":
+                        let cell = row.insertCell(-1);
+                        cell.innerHTML = aProduct[info];
+                        break;
+                }
+            }
+        }
+    });
+
+
 }
