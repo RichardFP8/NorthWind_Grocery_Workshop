@@ -49,7 +49,9 @@ function displayAllProducts(categoryDropdown, table) {
     table.style.display = "block";
 
     fetch("http://localhost:8081/api/products").then(response => response.json()).then(products => {
-        for (let aProduct of products) {
+        let productsArray = products.sort( (x, y) => x.productName < y.productName ? -1 : x.productName === y.productName ? 0: 1);
+
+        for (let aProduct of productsArray) {
             let row = tableBody.insertRow(-1);
             //each object(element) of the array, loop through the properties and display only 3 by using the switch statement
             for (let info in aProduct) {
@@ -81,7 +83,8 @@ function displayProductPerCategory(category) {
     //the returned data is another array but products only
 
     fetch(`http://localhost:8081/api/categories/${category.categoryId}`).then(response => response.json()).then(products => {
-        for (let aProduct of products) {
+        let productsArray = products.sort( (x, y) => x.productName < y.productName ? -1 : x.productName === y.productName ? 0: 1);
+        for (let aProduct of productsArray) {
             let row = tableBody.insertRow(-1);
             //each object(element) of the array, loop through the properties and display only 3 by using the switch statement
             for (let info in aProduct) {
